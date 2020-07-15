@@ -21,9 +21,7 @@ def can_charge(customer):
     """
     if customer.date_purged is not None:
         return False
-    if customer.default_source:
-        return True
-    return False
+    return bool(customer.default_source)
 
 
 def _create_without_account(user, card=None, plan=settings.PINAX_STRIPE_DEFAULT_PLAN, charge_immediately=True, quantity=None):

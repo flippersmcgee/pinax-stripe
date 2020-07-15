@@ -62,7 +62,7 @@ def _validate_create_params(customer, source, amount, application_fee, destinati
         raise ValueError(
             "You can only specify `application_fee` with `destination_account`"
         )
-    if application_fee and destination_account and destination_amount:
+    if application_fee and destination_amount:
         raise ValueError(
             "You can't specify `application_fee` with `destination_amount`"
         )

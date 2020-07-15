@@ -110,10 +110,10 @@ def is_valid(subscription):
     if not is_status_current(subscription):
         return False
 
-    if subscription.cancel_at_period_end and not is_period_current(subscription):
-        return False
-
-    return True
+    return bool(
+        not subscription.cancel_at_period_end
+        or is_period_current(subscription)
+    )
 
 
 def retrieve(customer, sub_id):
@@ -191,9 +191,13 @@ def update(subscription, plan=None, quantity=None, prorate=True, coupon=None, ch
         stripe_subscription.prorate = False
     if coupon:
         stripe_subscription.coupon = coupon
-    if charge_immediately:
-        if stripe_subscription.trial_end is not None and utils.convert_tstamp(stripe_subscription.trial_end) > timezone.now():
-            stripe_subscription.trial_end = "now"
+    if (
+        charge_immediately
+        and stripe_subscription.trial_end is not None
+        and utils.convert_tstamp(stripe_subscription.trial_end)
+        > timezone.now()
+    ):
+        stripe_subscription.trial_end = "now"
     sub = stripe_subscription.save()
     customer = models.Customer.objects.get(pk=subscription.customer.pk)
     return sync_subscription_from_stripe_data(customer, sub)

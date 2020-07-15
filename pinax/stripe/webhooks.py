@@ -174,7 +174,9 @@ class AccountApplicationDeauthorizeWebhook(Webhook):
         except stripe.error.PermissionError as exc:
             if self.stripe_account:
                 stripe_account_id = self.stripe_account.stripe_id
-                if not(stripe_account_id in str(exc) and obfuscate_secret_key(settings.PINAX_STRIPE_SECRET_KEY) in str(exc)):
+                if stripe_account_id not in str(exc) or obfuscate_secret_key(
+                    settings.PINAX_STRIPE_SECRET_KEY
+                ) not in str(exc):
                     raise exc
             self.event.valid = True
             self.event.validated_message = self.event.webhook_message

@@ -151,9 +151,7 @@ class ModelAdmin(admin.ModelAdmin):
         )
 
     def has_change_permission(self, request, obj=None):
-        if request.method == "POST":
-            return False
-        return True
+        return request.method != "POST"
 
     def get_changelist(self, request, **kwargs):
         return PrefetchingChangeList

@@ -244,7 +244,7 @@ class UserAccount(models.Model):
         unique_together = ("user", "account")
 
     def clean(self):
-        if not self.customer.stripe_account == self.account:
+        if self.customer.stripe_account != self.account:
             raise ValidationError(_("customer.stripe_account must be account."))
         return super(UserAccount, self).clean()
 
